@@ -1,46 +1,36 @@
 import { prisma } from "../../lib/prisma";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-const JWT_SECRET = process.env.JWT_SECRET!;
+export async function register(name: string, email: string, password: string) {
+  const userExists = await prisma.user.findUnique({ where: { email } });
 
-export const register = async (name: string, email: string, password: string) => {
+  if (userExists) throw new Error("Email já cadastrado");
+
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  const company = await prisma.company.create({
-    data: {
-      name: `${name}'s Company`,
-    },
-  });
-
   const user = await prisma.user.create({
-    data: {
-      name,
-      email,
-      password: hashedPassword,
-      companyId: company.id,
-    },
+    data: { name, email, password: hashedPassword },
+    select: { id: true, name: true, email: true, createdAt: true },
   });
 
   return user;
-};
+}
 
-export const login = async (email: string, password: string) => {
-  const user = await prisma.user.findUnique({
-    where: { email },
-  });
+export async function login(email: string, password: string) {
+  const user = await prisma.user.findUnique({ where: { email } });
 
-  if (!user) throw new Error("User not found");
+  if (!user) throw new Error("Usuário não encontrado");
 
-  const validPassword = await bcrypt.compare(password, user.password);
+  const isValid = await bcrypt.compare(password, user.password);
 
-  if (!validPassword) throw new Error("Invalid password");
+  if (!isValid) throw new Error("Senha inválida");
 
   const token = jwt.sign(
-    { userId: user.id, companyId: user.companyId },
-    JWT_SECRET,
+    { userId: user.id },
+    process.env.JWT_SECRET!,
     { expiresIn: "1d" }
   );
 
   return { token };
-};
+}
