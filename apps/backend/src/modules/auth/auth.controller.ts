@@ -4,7 +4,11 @@ import * as authService from "./auth.service";
 export async function register(req: Request, res: Response) {
   try {
     const { name, email, password } = req.body;
-    const user = await authService.register(name, email, password);
+    const user = await authService.register(
+      name,
+      email,
+      password,
+      );
     res.status(201).json(user);
   } catch (error: any) {
     res.status(400).json({ error: error.message });
@@ -20,3 +24,5 @@ export async function login(req: Request, res: Response) {
     res.status(400).json({ error: error.message });
   }
 }
+
+  

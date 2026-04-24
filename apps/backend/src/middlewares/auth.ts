@@ -9,25 +9,31 @@ export function authMiddleware(
   req: AuthRequest,
   res: Response,
   next: NextFunction
-) {
+): void {
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
-    return res.status(401).json({ error: "Token não enviado" });
+    res.status(401).json({ error: "No token" });
+    return;
   }
 
   const token = authHeader.split(" ")[1];
 
   try {
-   const decoded = jwt.verify(
-     token,
-     process.env.JWT_SECRET!
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET!
     ) as { userId: string };
-    
+
+    if (!decoded.userId) {
+      res.status(401).json({ error: "Invalid token" });
+      return;
+    }
+
     req.userId = decoded.userId;
 
     next();
-  } catch (err) {
-    return res.status(401).json({ error: "Token inválido" });
+  } catch {
+    res.status(401).json({ error: "Invalid token" });
   }
 }

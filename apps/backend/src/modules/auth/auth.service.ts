@@ -2,18 +2,19 @@ import { prisma } from "../../lib/prisma";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-export async function register(name: string, email: string, password: string) {
-  const userExists = await prisma.user.findUnique({ where: { email } });
-
-  if (userExists) throw new Error("Email já cadastrado");
-
+export async function register(
+  name: string,
+  email: string,
+  password: string
+) {
   const hashedPassword = await bcrypt.hash(password, 10);
-
-  const user = await prisma.user.create({
-    data: { name, email, password: hashedPassword },
-    select: { id: true, name: true, email: true, createdAt: true },
+   const user = await prisma.user.create({
+    data: {
+      name,
+      email,
+      password: hashedPassword,
+    },
   });
-
   return user;
 }
 
@@ -26,11 +27,13 @@ export async function login(email: string, password: string) {
 
   if (!isValid) throw new Error("Senha inválida");
 
-  const token = jwt.sign(
-    { userId: user.id },
+   const token = jwt.sign(
+   {
+      userId: user.id,
+    },
     process.env.JWT_SECRET!,
     { expiresIn: "1d" }
-  );
+    );
 
   return { token };
 }
