@@ -5,7 +5,6 @@ import authRoutes from "./modules/auth/auth.routes";
 import clientRoutes from "./modules/clients/client.routes";
 import { authMiddleware } from "./middlewares/auth";
 import { prisma } from "./lib/prisma";
-import { tenantMiddleware } from "./middlewares/tenant";
 
 const app = express();
 

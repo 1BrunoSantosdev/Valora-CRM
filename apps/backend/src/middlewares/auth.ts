@@ -1,8 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
+
 interface AuthRequest extends Request {
   userId?: string;
+  companyId?: string;
 }
 
 export function authMiddleware(
@@ -23,7 +25,7 @@ export function authMiddleware(
     const decoded = jwt.verify(
       token,
       process.env.JWT_SECRET!
-    ) as { userId: string };
+    ) as { userId: string; companyId: string };
 
     if (!decoded.userId) {
       res.status(401).json({ error: "Invalid token" });
@@ -31,6 +33,8 @@ export function authMiddleware(
     }
 
     req.userId = decoded.userId;
+
+    req.companyId = decoded.companyId;
 
     next();
   } catch {

@@ -74,6 +74,8 @@ export async function updateClientStatus(
   }
 }
 
+
+
 export async function getMetrics(req: AuthRequest, res: Response) {
   const metrics = await clientService.getMetricsService(req.userId!);
   return res.json(metrics);

@@ -37,3 +37,13 @@ export async function login(email: string, password: string) {
 
   return { token };
 }
+export function generateToken(user: any) {
+  return jwt.sign(
+    {
+      userId: user.id,
+      companyId: user.companyId, // 🔥 ESSENCIAL
+    },
+    process.env.JWT_SECRET!,
+    { expiresIn: "1d" }
+  );
+}
