@@ -1,5 +1,4 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import logo from "../assets/valoralogo.png";
 
 export default function MainLayout({ children }: any) {
   const navigate = useNavigate();
@@ -18,7 +17,9 @@ export default function MainLayout({ children }: any) {
       <aside className="w-64 bg-valora-card border-r border-valora-border px-6 py-8 flex flex-col">
 
         <div className="mb-10 flex justify-center">
-          <img src={logo} className="w-44 object-contain" />
+            <h1 className="text-2xl font-bold text-valora-primary">
+              Valora CRM
+            </h1>
         </div>
 
         <nav className="flex flex-col gap-3 text-sm">

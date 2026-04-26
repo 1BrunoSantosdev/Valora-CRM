@@ -43,7 +43,7 @@ export default function Dashboard() {
 
     loadData();
 
-    // 🔄 auto refresh (dados vivos)
+
     const interval = setInterval(() => {
       loadData();
     }, 5000);
@@ -82,13 +82,19 @@ export default function Dashboard() {
 
       setMetrics({ total, fechados, conversao });
 
-      // mock de crescimento (pode trocar depois por dados reais)
-      setGrowthData([
-        { name: "Jan", value: 2 },
-        { name: "Fev", value: 5 },
-        { name: "Mar", value: 8 },
-        { name: "Abr", value: fechados },
-      ]);
+      const now = new Date().toLocaleTimeString();
+
+      setGrowthData((prev) => {
+        const updated = [
+            ...prev,
+       {
+          name: now,
+          value: fechados,
+      },
+        ];
+
+        return updated.slice(-8); 
+        });
 
       setLoading(false);
     } catch (err) {
@@ -96,7 +102,6 @@ export default function Dashboard() {
     }
   }
 
-  // 🧊 Skeleton Loading
   if (loading) {
     return (
       <MainLayout>
@@ -213,7 +218,7 @@ export default function Dashboard() {
 }
 
 /* ============================
-   🔥 KPI COMPONENT (ANIMADO)
+        KPI COMPONENT
 ============================ */
 function KpiCard({
   title,

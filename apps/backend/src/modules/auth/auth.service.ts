@@ -41,7 +41,7 @@ export function generateToken(user: any) {
   return jwt.sign(
     {
       userId: user.id,
-      companyId: user.companyId, // 🔥 ESSENCIAL
+      companyId: user.companyId,
     },
     process.env.JWT_SECRET!,
     { expiresIn: "1d" }
